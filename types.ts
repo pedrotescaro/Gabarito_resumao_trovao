@@ -1,4 +1,3 @@
-// FIX: Import React to use React types like SVGProps and JSX.Element
 import React from 'react';
 
 export type DisciplineName = 'Matemática' | 'Física' | 'Química';
@@ -6,12 +5,12 @@ export type DisciplineName = 'Matemática' | 'Física' | 'Química';
 export type View = 'home' | 'summaries' | 'flashcards' | 'questions' | 'cheatsheet';
 
 export interface Discipline {
+  id: string; // Added: 'id' property
   name: DisciplineName;
-  // FIX: Changed return type from JSX.Element to React.ReactElement to resolve "Cannot find namespace 'JSX'" error.
   icon: (props: React.SVGProps<SVGSVGElement>) => React.ReactElement;
   description: string;
   color: string;
-  bgColor: string;
+  bgColor: string; // Added: 'bgColor' property
 }
 
 export interface Topic {
@@ -19,6 +18,7 @@ export interface Topic {
   name: string;
   discipline: DisciplineName;
   summary: string;
+  svg?: string; // Added: 'svg' property
 }
 
 export interface Flashcard {

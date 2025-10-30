@@ -1,6 +1,7 @@
+
 import React, { useState, useEffect, useCallback } from 'react';
 import type { View, Discipline, DisciplineName } from './types';
-import { DISCIPLINES, TOPICS, FLASHCARDS, EXAM_QUESTIONS } from './constants';
+import { disciplines, topics, flashcards, examQuestions } from './constants'; // Corrected import names
 import { Header } from './components/Header';
 import { HeroSection } from './components/HeroSection';
 import { DisciplineCard } from './components/DisciplineCard';
@@ -46,13 +47,13 @@ export default function App() {
     if (view === 'home') {
       return (
         <>
-          <HeroSection onNavigate={() => handleNavigate('summaries', DISCIPLINES[0])} />
+          <HeroSection onNavigate={handleNavigate} /> {/* Changed to pass handleNavigate directly */}
           <section id="disciplinas" className="container mx-auto px-4 py-12 md:py-20">
             <h2 className="text-3xl font-bold text-center mb-10 text-primary">
               Explore as Disciplinas
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {DISCIPLINES.map((d) => (
+              {disciplines.map((d) => (
                 <DisciplineCard key={d.name} discipline={d} onNavigate={handleNavigate} />
               ))}
             </div>
@@ -70,10 +71,10 @@ export default function App() {
       <StudyView
         initialView={view}
         initialDiscipline={selectedDiscipline}
-        disciplines={DISCIPLINES}
-        topics={TOPICS}
-        flashcards={FLASHCARDS}
-        examQuestions={EXAM_QUESTIONS}
+        disciplines={disciplines}
+        topics={topics}
+        flashcards={flashcards}
+        examQuestions={examQuestions}
         onNavigateHome={() => handleNavigate('home')}
       />
     );

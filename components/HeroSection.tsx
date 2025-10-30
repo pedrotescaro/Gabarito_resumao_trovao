@@ -1,8 +1,10 @@
 
 import React from 'react';
+import type { View, Discipline } from '../types'; // Import Discipline type
+import { disciplines } from '../constants'; // Import disciplines to pass to onNavigate
 
 interface HeroSectionProps {
-  onNavigate: () => void;
+  onNavigate: (view: View, discipline?: Discipline | null) => void;
 }
 
 export const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
@@ -18,12 +20,18 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
         <p className="max-w-2xl mx-auto text-lg md:text-xl text-muted-foreground mb-8">
           A plataforma definitiva para dominar os tópicos mais cobrados no ENEM, FUVEST e Provão Paulista com resumos, flashcards e questões.
         </p>
-        <div className="flex justify-center">
+        <div className="flex justify-center flex-wrap gap-4">
           <button 
-            onClick={onNavigate}
+            onClick={() => onNavigate('summaries', disciplines[0])} // Pass view and first discipline
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-11 rounded-md px-8"
           >
             Começar a Estudar
+          </button>
+          <button 
+            onClick={() => onNavigate('cheatsheet', null)} // Navigate directly to cheatsheet
+            className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-secondary text-secondary-foreground hover:bg-accent h-11 rounded-md px-8 border border-border"
+          >
+            Ver Gabarito Final
           </button>
         </div>
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">

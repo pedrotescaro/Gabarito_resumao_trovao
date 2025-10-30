@@ -1,8 +1,46 @@
-import React from 'react';
+import React, { useState, useCallback } from 'react';
+import { CopyIcon, CheckIcon } from './Icons'; // Import new icons
 
 const SectionTitle: React.FC<{children: React.ReactNode}> = ({ children }) => <h2 className="text-3xl font-bold mt-10 mb-6 border-b border-border pb-2 text-primary">{children}</h2>;
 const SubTitle: React.FC<{children: React.ReactNode}> = ({ children }) => <h3 className="text-2xl font-semibold mt-8 mb-4">{children}</h3>;
-const Formula: React.FC<{children: React.ReactNode}> = ({ children }) => <code className="bg-primary/10 border border-blue-500/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded font-mono text-sm whitespace-nowrap">{children}</code>;
+
+interface FormulaProps {
+    children: React.ReactNode;
+}
+
+const Formula: React.FC<FormulaProps> = ({ children }) => {
+    const [isCopied, setIsCopied] = useState(false);
+
+    const handleCopy = useCallback(async () => {
+        const formulaText = String(children).replace(/<[^>]*>?/gm, ''); // Remove HTML tags if any
+        try {
+            await navigator.clipboard.writeText(formulaText);
+            setIsCopied(true);
+            setTimeout(() => setIsCopied(false), 2000); // Reset after 2 seconds
+        } catch (err) {
+            console.error('Failed to copy formula: ', err);
+            // Optionally, show an error message
+        }
+    }, [children]);
+
+    return (
+        <div className="inline-flex items-center group relative mb-2">
+            <code className="bg-primary/10 border border-blue-500/30 text-blue-700 dark:text-blue-300 px-2.5 py-1.5 rounded font-mono text-base lg:text-lg">
+                {children}
+            </code>
+            <button
+                onClick={handleCopy}
+                className="absolute -top-2 -right-2 p-1 bg-background border border-border rounded-full opacity-0 group-hover:opacity-100 focus:opacity-100 transition-opacity duration-200"
+                aria-label="Copiar fórmula"
+                title="Copiar fórmula"
+            >
+                {isCopied ? <CheckIcon className="h-3 w-3 text-green-500" /> : <CopyIcon className="h-3 w-3 text-muted-foreground" />}
+            </button>
+        </div>
+    );
+};
+
+
 const Table: React.FC<{headers: string[], rows: (string | React.ReactNode)[][]}> = ({ headers, rows }) => (
   <div className="overflow-x-auto my-6">
     <table className="w-full border-collapse text-sm">
@@ -26,30 +64,34 @@ const mathTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Matemática Básica', 'Razão, Proporção, Porcentagem, Regra de Três. Médias (Aritmética, Ponderada, Geométrica). Leitura e interpretação de gráficos e tabelas.', 'Altíssima (Base para 90% da prova, contextualizada em finanças, demografia, etc.)', 'Alta (Fundamental, exigida como ferramenta para cálculos rápidos e precisos)'],
-        ['Geometria', <>
-            <div className="font-semibold text-primary/80">Plana</div>
-            <p className="text-xs mb-1">Áreas (Triângulo: <Formula>A=(b·h)/2</Formula>), Pitágoras (<Formula>a²=b²+c²</Formula>).</p>
-            <div className="font-semibold text-primary/80 mt-2">Espacial</div>
-            <p className="text-xs mb-1">Volumes (Prisma: <Formula>V=A_b·h</Formula>, Pirâmide: <Formula>V=(A_b·h)/3</Formula>).</p>
-            <div className="font-semibold text-primary/80 mt-2">Analítica</div>
-            <p className="text-xs">Distância entre pontos, Eq. da Reta (<Formula>y=mx+q</Formula>).</p>
-        </>, 'Alta (Contextualização, cálculo de volumes e áreas em cenários práticos como caixas d\'água e terrenos)', 'Alta (Rigor em demonstrações, Geometria Analítica aprofundada, polígonos inscritos e circunscritos)'],
-        ['Funções', <>
-            <div className="flex items-center gap-4">
-                <svg width="60" height="50" viewBox="0 0 60 50" className="text-blue-500"><path d="M5 45 L55 5" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 25 L55 25" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
-                <div>
-                    <div className="font-semibold text-primary/80">1º Grau (Afim)</div>
-                    <p className="text-xs">Reta: <Formula>f(x)=ax+b</Formula></p>
+        ['Geometria', (
+            <div>
+                <div className="font-semibold text-primary/80">Plana</div>
+                <p className="text-sm mb-1">Áreas (Triângulo: <Formula>A=(b·h)/2</Formula>), Pitágoras (<Formula>a²=b²+c²</Formula>).</p>
+                <div className="font-semibold text-primary/80 mt-2">Espacial</div>
+                <p className="text-sm mb-1">Volumes (Prisma: <Formula>V=A_b·h</Formula>, Pirâmide: <Formula>V=(A_b·h)/3</Formula>).</p>
+                <div className="font-semibold text-primary/80 mt-2">Analítica</div>
+                <p className="text-sm"><Formula>Dist. entre pontos</Formula>, Eq. da Reta (<Formula>y=mx+q</Formula>).</p>
+            </div>
+        ), 'Alta (Contextualização, cálculo de volumes e áreas em cenários práticos como caixas d\'água e terrenos)', 'Alta (Rigor em demonstrações, Geometria Analítica aprofundada, polígonos inscritos e circunscritos)'],
+        ['Funções', (
+            <div>
+                <div className="flex items-center gap-4 mb-2">
+                    <svg width="60" height="50" viewBox="0 0 60 50" className="w-full h-auto max-w-[60px] text-blue-500"><path d="M5 45 L55 5" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 25 L55 25" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
+                    <div>
+                        <div className="font-semibold text-primary/80">1º Grau (Afim)</div>
+                        <p className="text-sm"><Formula>f(x)=ax+b</Formula></p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-4 mt-2">
+                    <svg width="60" height="50" viewBox="0 0 60 50" className="w-full h-auto max-w-[60px] text-green-500"><path d="M5 45 Q30 -10 55 45" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 45 L55 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
+                    <div>
+                        <div className="font-semibold text-primary/80">2º Grau (Quadrática)</div>
+                        <p className="text-sm">Parábola: <Formula>f(x)=ax²+bx+c</Formula></p>
+                    </div>
                 </div>
             </div>
-            <div className="flex items-center gap-4 mt-2">
-                <svg width="60" height="50" viewBox="0 0 60 50" className="text-green-500"><path d="M5 45 Q30 -10 55 45" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 45 L55 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
-                <div>
-                    <div className="font-semibold text-primary/80">2º Grau (Quadrática)</div>
-                    <p className="text-xs">Parábola: <Formula>f(x)=ax²+bx+c</Formula></p>
-                </div>
-            </div>
-        </>, 'Média/Alta (Interpretação de gráficos que modelam crescimento populacional, juros, decaimento radioativo)', 'Alta (Manipulação algébrica complexa, composição de funções, funções modulares e trigonométricas)'],
+        ), 'Média/Alta (Interpretação de gráficos que modelam crescimento populacional, juros, decaimento radioativo)', 'Alta (Manipulação algébrica complexa, composição de funções, funções modulares e trigonométricas)'],
         ['Estatística e Probabilidade', 'Estatística: Média, Mediana e Moda. Medidas de dispersão (desvio padrão, variância). Análise Combinatória: Princípio fundamental da contagem, Permutação, Arranjo, Combinação. Probabilidade: Clássica, união de eventos e condicional.', 'Alta (Análise crítica de dados, interpretação de pesquisas e cenários de incerteza)', 'Média/Alta (Análise Combinatória robusta e problemas de probabilidade mais teóricos)'],
         ['Trigonometria', 'Relações trigonométricas no triângulo retângulo (seno, cosseno, tangente). Círculo trigonométrico. Funções, equações e inequações trigonométricas. Lei dos Senos e Lei dos Cossenos.', 'Média (Foco na aplicação em problemas geométricos, como cálculo de distâncias inacessíveis)', 'Alta (Exigência maior em manipulação de identidades, funções e equações trigonométricas)'],
     ]
@@ -85,87 +127,110 @@ const physicsTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Mecânica', 'Cinemática (MRU, MRUV, Queda Livre, Lançamentos). Dinâmica (Leis de Newton, Forças de atrito, normal, peso, tração, plano inclinado). Trabalho e Energia (Cinética, Potencial, sistemas conservativos e dissipativos). Impulso e Quantidade de Movimento (Colisões). Hidrostática (Pressão, Empuxo).', 'Altíssima (Energia e Cinemática em situações do dia a dia. Foco conceitual nas Leis de Newton)', 'Altíssima (Rigor matemático em Dinâmica, colisões, sistemas de blocos e estática)'],
-        ['Eletricidade', <>
-            <div className="font-semibold text-primary/80">Eletrodinâmica</div>
-            <p className="text-xs mb-1">1ª Lei de Ohm: <Formula>U = R·i</Formula></p>
-            <p className="text-xs mb-1">Potência: <Formula>P = U·i</Formula></p>
-            <svg width="120" height="60" viewBox="0 0 120 60" className="text-foreground">
-                {/* Série */}
-                <text x="5" y="12" className="text-[10px] font-semibold fill-muted-foreground">Série</text>
-                <path d="M5 25 H20" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <rect x="20" y="22" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
-                <text x="32.5" y="18" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₁</text>
-                <path d="M45 25 H60" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <rect x="60" y="22" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
-                <text x="72.5" y="18" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₂</text>
-                <path d="M85 25 H100" stroke="currentColor" strokeWidth="1" fill="none"/>
-                
-                {/* Paralelo */}
-                <text x="5" y="42" className="text-[10px] font-semibold fill-muted-foreground">Paralelo</text>
-                <path d="M20 50 H25 M25 50 V40 M25 50 V60" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <path d="M75 40 V50 M75 60 V50 M75 50 H80" stroke="currentColor" strokeWidth="1" fill="none"/>
-                {/* Branch 1 */}
-                <path d="M25 40 H35" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <rect x="35" y="37" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
-                <text x="47.5" y="33" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₁</text>
-                <path d="M60 40 H75" stroke="currentColor" strokeWidth="1" fill="none"/>
-                {/* Branch 2 */}
-                <path d="M25 60 H35" stroke="currentColor" strokeWidth="1" fill="none"/>
-                <rect x="35" y="57" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
-                <text x="47.5" y="53" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₂</text>
-                <path d="M60 60 H75" stroke="currentColor" strokeWidth="1" fill="none"/>
-            </svg>
-        </>, 'Alta (Eletrodinâmica é o mais cobrado: consumo de energia, análise de circuitos residenciais, efeito Joule)', 'Alta (Todos os tópicos são relevantes, com ênfase em campo elétrico, potencial e indução)'],
-        ['Termologia', <>
-            <div className="font-semibold text-primary/80">Calorimetria</div>
-            <div className="flex items-center gap-2">
-              <div>
-                <p className="text-xs mb-1">Sensível: <Formula>Q=mcΔT</Formula></p>
-                <p className="text-xs mb-1">Latente: <Formula>Q=mL</Formula></p>
-              </div>
-              <svg width="80" height="40" viewBox="0 0 80 40" className="text-foreground">
-                <rect x="5" y="10" width="20" height="20" className="fill-red-500/20"/>
-                <text x="15" y="24" textAnchor="middle" className="text-[8px] fill-red-700 dark:fill-red-300">Quente</text>
-                <rect x="55" y="10" width="20" height="20" className="fill-blue-500/20"/>
-                <text x="65" y="24" textAnchor="middle" className="text-[8px] fill-blue-700 dark:fill-blue-300">Frio</text>
-                <path d="M30 20 L50 20" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#cheatsheet_arrow)"/>
-                <defs><marker id="cheatsheet_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" /></marker></defs>
-              </svg>
+        ['Eletricidade', (
+            <div>
+                <div className="font-semibold text-primary/80">Eletrodinâmica</div>
+                <p className="text-sm mb-2">1ª Lei de Ohm: <Formula>U = R·i</Formula></p>
+                <p className="text-sm mb-2">Potência: <Formula>P = U·i</Formula></p>
+                <div className="mt-4 w-full flex justify-center">
+                    <svg viewBox="0 0 170 120" className="w-full h-auto max-w-[170px] text-foreground"> {/* Increased viewBox */}
+                        <style>
+                            {`.cheatsheet-text-label { font-family: 'Arial', sans-serif; font-size: 16px; fill: hsl(var(--muted-foreground)); font-weight: 600; }
+                            .cheatsheet-text-resistor { font-family: 'Arial', sans-serif; font-size: 14px; fill: hsl(var(--muted-foreground)); }`} {/* Increased resistor label font size */}
+                        </style>
+                        {/* Série */}
+                        <text x="10" y="20" className="cheatsheet-text-label">Série</text>
+                        <path d="M10 35 H40" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        <rect x="40" y="32" width="35" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/> {/* Adjusted resistor size */}
+                        <text x="57" y="28" textAnchor="middle" className="cheatsheet-text-resistor">R₁</text> {/* Adjusted position */}
+                        <path d="M75 35 H105" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        <rect x="105" y="32" width="35" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/> {/* Adjusted resistor size */}
+                        <text x="122" y="28" textAnchor="middle" className="cheatsheet-text-resistor">R₂</text> {/* Adjusted position */}
+                        <path d="M140 35 H160" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        
+                        {/* Paralelo */}
+                        <text x="10" y="65" className="cheatsheet-text-label">Paralelo</text>
+                        <path d="M30 90 H35 M35 90 V70 M35 90 V110" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        <path d="M145 70 V90 M145 110 V90 M145 90 H150" stroke="currentColor" strokeWidth="1.5" fill="none"/>
+                        {/* Branch 1 */}
+                        <path d="M35 70 H60" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        <rect x="60" y="67" width="35" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/> {/* Adjusted resistor size */}
+                        <text x="77" y="63" textAnchor="middle" className="cheatsheet-text-resistor">R₁</text> {/* Adjusted position */}
+                        <path d="M95 70 H145" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        {/* Branch 2 */}
+                        <path d="M35 110 H60" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                        <rect x="60" y="107" width="35" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/> {/* Adjusted resistor size */}
+                        <text x="77" y="103" textAnchor="middle" className="cheatsheet-text-resistor">R₂</text> {/* Adjusted position */}
+                        <path d="M95 110 H145" stroke="currentColor" strokeWidth="1.5" fill="none"/> {/* Adjusted path */}
+                    </svg>
+                </div>
             </div>
-            <div className="font-semibold text-primary/80 mt-2">Termodinâmica</div>
-            <p className="text-xs">1ª Lei: <Formula>ΔU = Q - W</Formula></p>
-        </>, 'Média/Alta (Trocas de calor, fenômenos do cotidiano como isolamento térmico, e noções de máquinas térmicas)', 'Média/Alta (Estudo aprofundado das Leis da Termodinâmica e transformações gasosas)'],
-        ['Ondulatória e Óptica', <>
-            <div className="font-semibold text-primary/80">Ondulatória</div>
-            <p className="text-xs mb-1">Eq. Fundamental: <Formula>v = λ·f</Formula></p>
-            <div className="font-semibold text-primary/80 mt-2">Óptica (Refração)</div>
-             <p className="text-xs mb-1">Lei de Snell: <Formula>n₁·senθ₁ = n₂·senθ₂</Formula></p>
-            <svg width="120" height="60" viewBox="0 0 120 60" className="text-foreground">
-                <defs>
-                    <marker id="cheatsheet_arrow_optics" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" className="fill-primary" /></marker>
-                </defs>
-                {/* Ondulatória */}
-                <path d="M5 20 H55" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <path d="M5 20 Q 15 5, 25 20 T 45 20" className="stroke-primary" strokeWidth="1.5" fill="none"/>
-                <path d="M15 12.5 V 20" stroke="hsl(var(--border))" strokeWidth="0.5" strokeDasharray="2 2"/>
-                <text x="17" y="18" className="text-[8px] fill-muted-foreground">A</text>
-                <path d="M5 25 H 45" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <path d="M5 23 V 27" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <path d="M45 23 V 27" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <text x="25" y="35" textAnchor="middle" className="text-[8px] fill-muted-foreground">&lambda;</text>
-                
-                {/* Óptica (Refração) */}
-                <path d="M65 30 H115" stroke="hsl(var(--border))" strokeWidth="1"/>
-                <text x="70" y="25" className="text-[8px] fill-muted-foreground">n₁</text>
-                <text x="70" y="40" className="text-[8px] fill-muted-foreground">n₂</text>
-                <path d="M90 5 V 55" stroke="hsl(var(--border))" strokeDasharray="2 2" strokeWidth="1"/>
-                <path d="M70 10 L90 30 L105 55" className="stroke-primary" strokeWidth="1.5" fill="none" markerEnd="url(#cheatsheet_arrow_optics)"/>
-                <path d="M90 30 A 10 10 0 0 0 83.4 21.7" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <text x="78" y="24" className="text-[7px] fill-muted-foreground">&theta;₁</text>
-                <path d="M90 30 A 8 8 0 0 1 94 37.5" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
-                <text x="98" y="38" className="text-[7px] fill-muted-foreground">&theta;₂</text>
-            </svg>
-        </>, 'Alta (Fenômenos ondulatórios com som e luz, e suas aplicações tecnológicas, como fones com cancelamento de ruído)', 'Média/Alta (Formação de imagens em espelhos e lentes, Lei de Snell com rigor matemático)'],
+        ), 'Alta (Eletrodinâmica é o mais cobrado: consumo de energia, análise de circuitos residenciais, efeito Joule)', 'Alta (Todos os tópicos são relevantes, com ênfase em campo elétrico, potencial e indução)'],
+        ['Termologia', (
+            <div>
+                <div className="font-semibold text-primary/80">Calorimetria</div>
+                <div className="flex items-center gap-2">
+                  <div>
+                    <p className="text-sm mb-1">Sensível: <Formula>Q=mcΔT</Formula></p>
+                    <p className="text-sm mb-1">Latente: <Formula>Q=mL</Formula></p>
+                  </div>
+                  <svg viewBox="0 0 80 40" className="w-full h-auto max-w-[80px] text-foreground">
+                    <rect x="5" y="10" width="20" height="20" className="fill-red-500/20"/>
+                    <text x="15" y="24" textAnchor="middle" className="text-[14px] fill-red-700 dark:fill-red-300">Quente</text>
+                    <rect x="55" y="10" width="20" height="20" className="fill-blue-500/20"/>
+                    <text x="65" y="24" textAnchor="middle" className="text-[14px] fill-blue-700 dark:fill-blue-300">Frio</text>
+                    <path d="M30 20 L50 20" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#cheatsheet_arrow)"/>
+                    <defs><marker id="cheatsheet_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" /></marker></defs>
+                  </svg>
+                </div>
+                <div className="font-semibold text-primary/80 mt-2">Termodinâmica</div>
+                <p className="text-sm"><Formula>1ª Lei: ΔU = Q - W</Formula></p>
+            </div>
+        ), 'Média/Alta (Trocas de calor, fenômenos do cotidiano como isolamento térmico, e noções de máquinas térmicas)', 'Média/Alta (Estudo aprofundado das Leis da Termodinâmica e transformações gasosas)'],
+        ['Ondulatória e Óptica', (
+            <div>
+                <div className="font-semibold text-primary/80">Ondulatória</div>
+                <p className="text-sm mb-2"><Formula>Eq. Fundamental: v = λ·f</Formula></p>
+                <div className="font-semibold text-primary/80 mt-2">Óptica (Refração)</div>
+                <p className="text-sm mb-2"><Formula>Lei de Snell: n₁·senθ₁ = n₂·senθ₂</Formula></p>
+                <div className="mt-4 w-full flex justify-center">
+                    <svg viewBox="0 0 170 120" className="w-full h-auto max-w-[170px] text-foreground"> {/* Increased viewBox */}
+                        <style>
+                            {`.cheatsheet-text-small { font-family: 'Arial', sans-serif; font-size: 14px; fill: hsl(var(--muted-foreground)); }
+                            .cheatsheet-wave-path { stroke: hsl(var(--primary)); }
+                            .cheatsheet-ray-path { stroke: hsl(var(--primary)); }
+                            .cheatsheet-normal-line { stroke: hsl(var(--border)); stroke-dasharray: 2 2; }
+                            .cheatsheet-interface-line { stroke: hsl(var(--border)); }`}
+                        </style>
+                        <defs>
+                            <marker id="cheatsheet_arrow_optics" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse">
+                                <path d="M 0 0 L 10 5 L 0 10 z" className="fill-primary" />
+                            </marker>
+                        </defs>
+                        {/* Ondulatória */}
+                        <path d="M5 20 H80" className="cheatsheet-interface-line" strokeWidth="0.5"/> {/* Adjusted path */}
+                        <path d="M5 20 Q 25 5, 45 20 T 75 20" className="cheatsheet-wave-path" strokeWidth="1.5" fill="none"/> {/* Adjusted wave path */}
+                        <path d="M25 12.5 V 20" className="cheatsheet-normal-line" strokeWidth="0.5"/> {/* Adjusted line */}
+                        <text x="27" y="18" className="cheatsheet-text-small">A</text>
+                        <path d="M5 25 H 75" className="cheatsheet-normal-line" strokeWidth="0.5"/>
+                        <path d="M5 23 V 27" className="cheatsheet-normal-line" strokeWidth="0.5"/>
+                        <path d="M75 23 V 27" className="cheatsheet-normal-line" strokeWidth="0.5"/>
+                        <text x="40" y="35" textAnchor="middle" className="cheatsheet-text-small">λ</text> {/* Adjusted position */}
+                        
+                        {/* Óptica (Refração) */}
+                        <path d="M90 30 H160" className="cheatsheet-interface-line" strokeWidth="1"/> {/* Adjusted path */}
+                        <text x="95" y="25" className="cheatsheet-text-small">n₁</text>
+                        <text x="95" y="40" className="cheatsheet-text-small">n₂</text>
+                        <path d="M120 5 V 55" className="cheatsheet-normal-line" strokeDasharray="2 2" strokeWidth="1"/> {/* Adjusted line */}
+                        <path d="M100 10 L120 30 L135 55" className="cheatsheet-ray-path" strokeWidth="1.5" fill="none" markerEnd="url(#cheatsheet_arrow_optics)"/> {/* Adjusted ray path */}
+                        <path d="M120 30 A 10 10 0 0 0 113.4 21.7" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                        <text x="115" y="24" className="cheatsheet-text-small">θ₁</text> {/* Adjusted position */}
+                        <path d="M120 30 A 8 8 0 0 1 124 37.5" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                        <text x="128" y="38" className="cheatsheet-text-small">θ₂</text> {/* Adjusted position */}
+                    </svg>
+                </div>
+            </div>
+        ), 'Alta (Fenômenos ondulatórios com som e luz, e suas aplicações tecnológicas, como fones com cancelamento de ruído)', 'Média/Alta (Formação de imagens em espelhos e lentes, Lei de Snell com rigor matemático)'],
     ]
 };
 
@@ -199,42 +264,44 @@ const chemistryTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Química Geral', 'Modelos Atômicos, Distribuição Eletrônica. Tabela Periódica e Propriedades. Ligações (Iônica, Covalente, Metálica) e Geometria Molecular. Polaridade. Forças Intermoleculares. Funções Inorgânicas (Ácidos, Bases, Sais, Óxidos) e reações.', 'Média/Alta (Relação entre estrutura, polaridade e propriedades como solubilidade e ponto de ebulição)', 'Alta (Teoria aprofundada de ligações, geometria VSEPR e nomenclatura)'],
-        ['Físico-Química', <>
-            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+        ['Físico-Química', (
+            <div className="grid grid-cols-2 gap-x-4 gap-y-4"> {/* Adjusted gap-y */}
                 <div>
-                    <div className="font-semibold text-primary/80 text-xs">Estequiometria</div>
-                    <p className="text-xs"><Formula>n = m/MM</Formula></p>
+                    <div className="font-semibold text-primary/80 text-sm mb-1">Estequiometria</div>
+                    <Formula>n = m/MM</Formula>
                 </div>
                 <div>
-                    <div className="font-semibold text-primary/80 text-xs">Soluções</div>
-                    <p className="text-xs"><Formula>C₁V₁ = C₂V₂</Formula></p>
+                    <div className="font-semibold text-primary/80 text-sm mb-1">Soluções</div>
+                    <Formula>C₁V₁ = C₂V₂</Formula>
                 </div>
                 <div>
-                    <div className="font-semibold text-primary/80 text-xs">Termoquímica</div>
-                    <p className="text-xs">Exo: <Formula>ΔH &lt; 0</Formula></p>
+                    <div className="font-semibold text-primary/80 text-sm mb-1">Termoquímica</div>
+                    <Formula>Exo: ΔH &lt; 0</Formula>
                 </div>
                 <div>
-                    <div className="font-semibold text-primary/80 text-xs">Eletroquímica</div>
-                    <p className="text-xs">Pilha: <Formula>ΔE° &gt; 0</Formula></p>
+                    <div className="font-semibold text-primary/80 text-sm mb-1">Eletroquímica</div>
+                    <Formula>Pilha: ΔE° &gt; 0</Formula>
                 </div>
              </div>
-        </>, 'Altíssima (Os 3 pilares: Estequiometria, Soluções e Termoquímica. Equilíbrio em contextos ambientais)', 'Alta (Todos os tópicos com maior rigor matemático e conceitual, incluindo cinética e eletroquímica)'],
-        ['Química Orgânica', <>
-            <div className="font-semibold text-primary/80">Funções Principais</div>
-            <p className="text-xs mb-1">Álcool: <Formula>R-OH</Formula></p>
-            <p className="text-xs mb-1">Ácido Carboxílico: <Formula>R-COOH</Formula></p>
-            <div className="font-semibold text-primary/80 mt-2">Isomeria Geométrica</div>
-            <svg width="120" height="40" viewBox="0 0 120 40" className="text-foreground">
-                <path d="M20 20 H40" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M20 20 L5 5" stroke="currentColor" strokeWidth="1" />
-                <path d="M40 20 L55 35" stroke="currentColor" strokeWidth="1" />
-                <text x="0" y="35" className="text-[10px] fill-muted-foreground">Cis</text>
-                <path d="M80 20 H100" stroke="currentColor" strokeWidth="1.5" />
-                <path d="M80 20 L65 5" stroke="currentColor" strokeWidth="1" />
-                <path d="M100 20 L115 5" stroke="currentColor" strokeWidth="1" />
-                <text x="60" y="35" className="text-[10px] fill-muted-foreground">Trans</text>
-            </svg>
-        </>, 'Alta (Identificação de funções em moléculas do cotidiano, polímeros, e relação estrutura-propriedade)', 'Alta (Foco intenso em Isomeria e mecanismos de Reações Orgânicas)'],
+        ), 'Altíssima (Os 3 pilares: Estequiometria, Soluções e Termoquímica. Equilíbrio em contextos ambientais)', 'Alta (Todos os tópicos com maior rigor matemático e conceitual, incluindo cinética e eletroquímica)'],
+        ['Química Orgânica', (
+            <div>
+                <div className="font-semibold text-primary/80">Funções Principais</div>
+                <p className="text-sm mb-1"><Formula>Álcool: R-OH</Formula></p>
+                <p className="text-sm mb-1"><Formula>Ácido Carboxílico: R-COOH</Formula></p>
+                <div className="font-semibold text-primary/80 mt-2">Isomeria Geométrica</div>
+                <svg viewBox="0 0 130 40" className="w-full h-auto max-w-[130px] text-foreground"> {/* Increased viewBox */}
+                    <path d="M20 20 H40" stroke="currentColor" strokeWidth="1.5" />
+                    <path d="M20 20 L5 5" stroke="currentColor" strokeWidth="1" />
+                    <path d="M40 20 L55 35" stroke="currentColor" strokeWidth="1" />
+                    <text x="0" y="35" className="text-[14px] fill-muted-foreground">Cis</text>
+                    <path d="M90 20 H110" stroke="currentColor" strokeWidth="1.5" /> {/* Adjusted position */}
+                    <path d="M90 20 L75 5" stroke="currentColor" strokeWidth="1" /> {/* Adjusted position */}
+                    <path d="M110 20 L125 5" stroke="currentColor" strokeWidth="1" /> {/* Adjusted position */}
+                    <text x="70" y="35" className="text-[14px] fill-muted-foreground">Trans</text> {/* Adjusted position */}
+                </svg>
+            </div>
+        ), 'Alta (Identificação de funções em moléculas do cotidiano, polímeros, e relação estrutura-propriedade)', 'Alta (Foco intenso em Isomeria e mecanismos de Reações Orgânicas)'],
     ]
 };
 

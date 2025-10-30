@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from 'react';
 import type { View, Discipline, Topic, Flashcard, ExamQuestion, DisciplineName } from '../types';
+// Removed internal import: import { disciplines, topics, flashcards, examQuestions } from '../constants';
 import { SummaryContent } from './SummaryContent';
 import { FlashcardPlayer } from './FlashcardPlayer';
 import { QuestionViewer } from './QuestionViewer';
@@ -186,6 +187,32 @@ export const StudyView: React.FC<StudyViewProps> = ({
         {selectedTopic && currentView === 'summaries' && <SummaryContent topic={selectedTopic} />}
         {selectedTopic && currentView === 'flashcards' && <FlashcardPlayer flashcards={filteredFlashcards} />}
         {selectedTopic && currentView === 'questions' && <QuestionViewer questions={filteredQuestions} />}
+
+        {selectedTopic && filteredTopics.length > 1 && (
+            <div className="mt-8 flex justify-between items-center bg-card border border-border rounded-lg p-4 shadow-sm">
+                <button
+                    onClick={handlePreviousTopic}
+                    disabled={currentTopicIndex <= 0}
+                    className="flex items-center gap-2 py-2 px-4 rounded-md bg-secondary hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                    aria-label="Tópico anterior"
+                >
+                    <ChevronLeftIcon className="h-4 w-4" />
+                    Tópico Anterior
+                </button>
+                <span className="text-sm text-muted-foreground">
+                    {currentTopicIndex + 1} / {filteredTopics.length}
+                </span>
+                <button
+                    onClick={handleNextTopic}
+                    disabled={currentTopicIndex >= filteredTopics.length - 1 || currentTopicIndex === -1}
+                    className="flex items-center gap-2 py-2 px-4 rounded-md bg-secondary hover:bg-accent disabled:opacity-50 disabled:cursor-not-allowed transition-colors text-sm font-medium"
+                    aria-label="Próximo tópico"
+                >
+                    Próximo Tópico
+                    <ChevronRightIcon className="h-4 w-4" />
+                </button>
+            </div>
+        )}
       </div>
     </div>
   );
