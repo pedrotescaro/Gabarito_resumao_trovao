@@ -1,3 +1,4 @@
+
 import React from 'react';
 
 interface HeroSectionProps {
@@ -27,9 +28,9 @@ export const HeroSection: React.FC<HeroSectionProps> = ({ onNavigate }) => {
         </div>
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto text-left">
             <StatCard value="3" label="Disciplinas" />
-            <StatCard value="14" label="Tópicos Estratégicos" />
-            <StatCard value="96" label="Flashcards" />
-            <StatCard value="61" label="Questões Resolvidas" />
+            <StatCard value="15" label="Tópicos Estratégicos" />
+            <StatCard value="45" label="Flashcards" />
+            <StatCard value="28" label="Questões Resolvidas" />
         </div>
       </div>
     </section>

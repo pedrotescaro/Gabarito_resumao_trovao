@@ -2,13 +2,7 @@ import React from 'react';
 
 const SectionTitle: React.FC<{children: React.ReactNode}> = ({ children }) => <h2 className="text-3xl font-bold mt-10 mb-6 border-b border-border pb-2 text-primary">{children}</h2>;
 const SubTitle: React.FC<{children: React.ReactNode}> = ({ children }) => <h3 className="text-2xl font-semibold mt-8 mb-4">{children}</h3>;
-const Formula: React.FC<{children: React.ReactNode}> = ({ children }) => <code className="bg-primary/10 border border-blue-500/30 text-blue-300 px-2 py-1 rounded font-mono text-sm whitespace-nowrap">{children}</code>;
-const ExampleBox: React.FC<{title:string, children: React.ReactNode}> = ({ title, children }) => (
-    <div className="bg-card border border-border rounded-lg p-6 mt-4">
-        <h4 className="font-bold mb-2 text-lg">{title}</h4>
-        {children}
-    </div>
-);
+const Formula: React.FC<{children: React.ReactNode}> = ({ children }) => <code className="bg-primary/10 border border-blue-500/30 text-blue-700 dark:text-blue-300 px-2 py-1 rounded font-mono text-sm whitespace-nowrap">{children}</code>;
 const Table: React.FC<{headers: string[], rows: (string | React.ReactNode)[][]}> = ({ headers, rows }) => (
   <div className="overflow-x-auto my-6">
     <table className="w-full border-collapse text-sm">
@@ -32,8 +26,30 @@ const mathTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Matemática Básica', 'Razão, Proporção, Porcentagem, Regra de Três. Médias (Aritmética, Ponderada, Geométrica). Leitura e interpretação de gráficos e tabelas.', 'Altíssima (Base para 90% da prova, contextualizada em finanças, demografia, etc.)', 'Alta (Fundamental, exigida como ferramenta para cálculos rápidos e precisos)'],
-        ['Geometria', 'Plana: Áreas, perímetros, semelhança de triângulos, relações métricas no triângulo retângulo e Teorema de Tales. Espacial: Volumes e áreas de prismas, pirâmides, cilindros, cones, esferas e seus troncos. Analítica: Distância entre pontos, equação da reta e da circunferência.', 'Alta (Contextualização, cálculo de volumes e áreas em cenários práticos como caixas d\'água e terrenos)', 'Alta (Rigor em demonstrações, Geometria Analítica aprofundada, polígonos inscritos e circunscritos)'],
-        ['Funções', 'Conceitos de domínio, contradomínio e imagem. Funções do 1º e 2º grau (análise de gráficos, raízes, vértice). Função Exponencial e Logarítmica (propriedades e resolução de equações). Análise do sinal da função.', 'Média/Alta (Interpretação de gráficos que modelam crescimento populacional, juros, decaimento radioativo)', 'Alta (Manipulação algébrica complexa, composição de funções, funções modulares e trigonométricas)'],
+        ['Geometria', <>
+            <div className="font-semibold text-primary/80">Plana</div>
+            <p className="text-xs mb-1">Áreas (Triângulo: <Formula>A=(b·h)/2</Formula>), Pitágoras (<Formula>a²=b²+c²</Formula>).</p>
+            <div className="font-semibold text-primary/80 mt-2">Espacial</div>
+            <p className="text-xs mb-1">Volumes (Prisma: <Formula>V=A_b·h</Formula>, Pirâmide: <Formula>V=(A_b·h)/3</Formula>).</p>
+            <div className="font-semibold text-primary/80 mt-2">Analítica</div>
+            <p className="text-xs">Distância entre pontos, Eq. da Reta (<Formula>y=mx+q</Formula>).</p>
+        </>, 'Alta (Contextualização, cálculo de volumes e áreas em cenários práticos como caixas d\'água e terrenos)', 'Alta (Rigor em demonstrações, Geometria Analítica aprofundada, polígonos inscritos e circunscritos)'],
+        ['Funções', <>
+            <div className="flex items-center gap-4">
+                <svg width="60" height="50" viewBox="0 0 60 50" className="text-blue-500"><path d="M5 45 L55 5" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 25 L55 25" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
+                <div>
+                    <div className="font-semibold text-primary/80">1º Grau (Afim)</div>
+                    <p className="text-xs">Reta: <Formula>f(x)=ax+b</Formula></p>
+                </div>
+            </div>
+            <div className="flex items-center gap-4 mt-2">
+                <svg width="60" height="50" viewBox="0 0 60 50" className="text-green-500"><path d="M5 45 Q30 -10 55 45" stroke="currentColor" strokeWidth="1.5" fill="none"/><path d="M5 45 L55 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/><path d="M30 5 L30 45" stroke="hsl(var(--border))" strokeDasharray="2 2"/></svg>
+                <div>
+                    <div className="font-semibold text-primary/80">2º Grau (Quadrática)</div>
+                    <p className="text-xs">Parábola: <Formula>f(x)=ax²+bx+c</Formula></p>
+                </div>
+            </div>
+        </>, 'Média/Alta (Interpretação de gráficos que modelam crescimento populacional, juros, decaimento radioativo)', 'Alta (Manipulação algébrica complexa, composição de funções, funções modulares e trigonométricas)'],
         ['Estatística e Probabilidade', 'Estatística: Média, Mediana e Moda. Medidas de dispersão (desvio padrão, variância). Análise Combinatória: Princípio fundamental da contagem, Permutação, Arranjo, Combinação. Probabilidade: Clássica, união de eventos e condicional.', 'Alta (Análise crítica de dados, interpretação de pesquisas e cenários de incerteza)', 'Média/Alta (Análise Combinatória robusta e problemas de probabilidade mais teóricos)'],
         ['Trigonometria', 'Relações trigonométricas no triângulo retângulo (seno, cosseno, tangente). Círculo trigonométrico. Funções, equações e inequações trigonométricas. Lei dos Senos e Lei dos Cossenos.', 'Média (Foco na aplicação em problemas geométricos, como cálculo de distâncias inacessíveis)', 'Alta (Exigência maior em manipulação de identidades, funções e equações trigonométricas)'],
     ]
@@ -54,13 +70,102 @@ const mathFormulas = {
     ]
 };
 
+const mathQuestions = {
+    headers: ['Tópico Principal', 'ENEM (Contextualização)', 'FUVEST (Rigor e Álgebra)', 'Provão Paulista (Aplicação Direta)'],
+    rows: [
+        ['Matemática Básica', <>Uma viagem de 560 km foi percorrida em 7 horas. Mantendo a mesma velocidade média, em quanto tempo um trecho de 240 km será percorrido?<br /><strong className="text-primary">R:</strong> <Formula>3 horas</Formula></>, <>Se 5 operários, trabalhando 6 h/dia, constroem 150 m de muro em 10 dias, quantos dias 8 operários, a 5 h/dia, precisarão para construir 320 m?<br /><strong className="text-primary">R:</strong> <Formula>16 dias</Formula></>, <>Uma mercadoria custa R$ 400,00. Se for vendida com 20% de desconto, qual será o preço final?<br /><strong className="text-primary">R:</strong> <Formula>R$ 320,00</Formula></>],
+        ['Geometria', <>Um reservatório cilíndrico com r=2m e h=3m tem V=37,68 m³. Um paralelepípedo com mesma altura e volume deve ter que lado de base x?<br /><strong className="text-primary">R:</strong> <Formula>x = 3,54 m</Formula></>, <>Um triângulo ABC com A(2,4) e B(-2,1) é isósceles com base AB. Qual a coordenada y do ponto C(0,y)?<br /><strong className="text-primary">R:</strong> <Formula>y = 2,5</Formula></>, <>Calcule a área de um trapézio com base maior 20m, base menor 12m e altura 8m.<br /><strong className="text-primary">R:</strong> <Formula>A = 128 m²</Formula></>],
+        ['Funções', <>O nível sonoro é &beta; = 10&middot;log(I/I₀), com I₀=10⁻¹² W/m². Para um show com &beta;=120 dB, qual é a intensidade I?<br /><strong className="text-primary">R:</strong> <Formula>I = 1 W/m²</Formula></>, <>Uma função quadrática tem raízes 2 e -4 e passa por (0,-8). Determine o coeficiente 'a'.<br /><strong className="text-primary">R:</strong> <Formula>a = 1</Formula></>, <>Uma conta de celular é C(t)=30+0,5t. Qual o custo para 120 minutos?<br /><strong className="text-primary">R:</strong> <Formula>R$ 90,00</Formula></>],
+        ['Estat./Prob.', <>Num grupo, 60% são homens, 10% deles são vegetarianos. 40% são mulheres, 5% delas são vegetarianas. Qual a prob. de um vegetariano ser homem?<br /><strong className="text-primary">R:</strong> <Formula>75%</Formula></>, <></>, <></>],
+        ['Trigonometria', <>Uma pessoa a 50m da base de um prédio vê o topo sob um ângulo de 30°. Se tg(30&deg;) &asymp; 0,58, qual a altura do prédio?<br /><strong className="text-primary">R:</strong> <Formula>29 m</Formula></>, <>Se sin(x) = 1/3, calcule cos(2x).<br /><strong className="text-primary">R:</strong> <Formula>cos(2x) = 7/9</Formula></>, <>Em um triângulo retângulo, o cateto oposto a &alpha; é 5 e a hipotenusa é 13. Qual o valor de sin(&alpha;)?<br /><strong className="text-primary">R:</strong> <Formula>5/13</Formula></>]
+    ]
+};
+
 const physicsTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Mecânica', 'Cinemática (MRU, MRUV, Queda Livre, Lançamentos). Dinâmica (Leis de Newton, Forças de atrito, normal, peso, tração, plano inclinado). Trabalho e Energia (Cinética, Potencial, sistemas conservativos e dissipativos). Impulso e Quantidade de Movimento (Colisões). Hidrostática (Pressão, Empuxo).', 'Altíssima (Energia e Cinemática em situações do dia a dia. Foco conceitual nas Leis de Newton)', 'Altíssima (Rigor matemático em Dinâmica, colisões, sistemas de blocos e estática)'],
-        ['Eletricidade', 'Eletrostática (Carga, campo e potencial elétrico). Eletrodinâmica (Corrente, tensão, resistência, Leis de Ohm, Potência, circuitos em série e paralelo, geradores e receptores). Eletromagnetismo (Campo magnético, Força magnética, Indução eletromagnética).', 'Alta (Eletrodinâmica é o mais cobrado: consumo de energia, análise de circuitos residenciais, efeito Joule)', 'Alta (Todos os tópicos são relevantes, com ênfase em campo elétrico, potencial e indução)'],
-        ['Termologia', 'Termometria (Escalas). Calorimetria (Calor sensível e latente, trocas de calor). Dilatação. Gases (Equação de Clapeyron). Termodinâmica (1ª e 2ª Leis, máquinas térmicas e ciclos).', 'Média/Alta (Trocas de calor, fenômenos do cotidiano como isolamento térmico, e noções de máquinas térmicas)', 'Média/Alta (Estudo aprofundado das Leis da Termodinâmica e transformações gasosas)'],
-        ['Ondulatória e Óptica', 'Ondulatória: Classificação, equação fundamental (v=λf), fenômenos (reflexão, refração, difração, interferência, polarização). Acústica. Óptica: Princípios da óptica geométrica, espelhos planos e esféricos, lentes delgadas (Equação de Gauss), refração (Lei de Snell).', 'Alta (Fenômenos ondulatórios com som e luz, e suas aplicações tecnológicas, como fones com cancelamento de ruído)', 'Média/Alta (Formação de imagens em espelhos e lentes, Lei de Snell com rigor matemático)'],
+        ['Eletricidade', <>
+            <div className="font-semibold text-primary/80">Eletrodinâmica</div>
+            <p className="text-xs mb-1">1ª Lei de Ohm: <Formula>U = R·i</Formula></p>
+            <p className="text-xs mb-1">Potência: <Formula>P = U·i</Formula></p>
+            <svg width="120" height="60" viewBox="0 0 120 60" className="text-foreground">
+                {/* Série */}
+                <text x="5" y="12" className="text-[10px] font-semibold fill-muted-foreground">Série</text>
+                <path d="M5 25 H20" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <rect x="20" y="22" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
+                <text x="32.5" y="18" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₁</text>
+                <path d="M45 25 H60" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <rect x="60" y="22" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
+                <text x="72.5" y="18" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₂</text>
+                <path d="M85 25 H100" stroke="currentColor" strokeWidth="1" fill="none"/>
+                
+                {/* Paralelo */}
+                <text x="5" y="42" className="text-[10px] font-semibold fill-muted-foreground">Paralelo</text>
+                <path d="M20 50 H25 M25 50 V40 M25 50 V60" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <path d="M75 40 V50 M75 60 V50 M75 50 H80" stroke="currentColor" strokeWidth="1" fill="none"/>
+                {/* Branch 1 */}
+                <path d="M25 40 H35" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <rect x="35" y="37" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
+                <text x="47.5" y="33" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₁</text>
+                <path d="M60 40 H75" stroke="currentColor" strokeWidth="1" fill="none"/>
+                {/* Branch 2 */}
+                <path d="M25 60 H35" stroke="currentColor" strokeWidth="1" fill="none"/>
+                <rect x="35" y="57" width="25" height="6" className="stroke-currentColor fill-background" strokeWidth="1"/>
+                <text x="47.5" y="53" textAnchor="middle" className="text-[8px] fill-muted-foreground">R₂</text>
+                <path d="M60 60 H75" stroke="currentColor" strokeWidth="1" fill="none"/>
+            </svg>
+        </>, 'Alta (Eletrodinâmica é o mais cobrado: consumo de energia, análise de circuitos residenciais, efeito Joule)', 'Alta (Todos os tópicos são relevantes, com ênfase em campo elétrico, potencial e indução)'],
+        ['Termologia', <>
+            <div className="font-semibold text-primary/80">Calorimetria</div>
+            <div className="flex items-center gap-2">
+              <div>
+                <p className="text-xs mb-1">Sensível: <Formula>Q=mcΔT</Formula></p>
+                <p className="text-xs mb-1">Latente: <Formula>Q=mL</Formula></p>
+              </div>
+              <svg width="80" height="40" viewBox="0 0 80 40" className="text-foreground">
+                <rect x="5" y="10" width="20" height="20" className="fill-red-500/20"/>
+                <text x="15" y="24" textAnchor="middle" className="text-[8px] fill-red-700 dark:fill-red-300">Quente</text>
+                <rect x="55" y="10" width="20" height="20" className="fill-blue-500/20"/>
+                <text x="65" y="24" textAnchor="middle" className="text-[8px] fill-blue-700 dark:fill-blue-300">Frio</text>
+                <path d="M30 20 L50 20" stroke="currentColor" strokeWidth="1.5" markerEnd="url(#cheatsheet_arrow)"/>
+                <defs><marker id="cheatsheet_arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" /></marker></defs>
+              </svg>
+            </div>
+            <div className="font-semibold text-primary/80 mt-2">Termodinâmica</div>
+            <p className="text-xs">1ª Lei: <Formula>ΔU = Q - W</Formula></p>
+        </>, 'Média/Alta (Trocas de calor, fenômenos do cotidiano como isolamento térmico, e noções de máquinas térmicas)', 'Média/Alta (Estudo aprofundado das Leis da Termodinâmica e transformações gasosas)'],
+        ['Ondulatória e Óptica', <>
+            <div className="font-semibold text-primary/80">Ondulatória</div>
+            <p className="text-xs mb-1">Eq. Fundamental: <Formula>v = λ·f</Formula></p>
+            <div className="font-semibold text-primary/80 mt-2">Óptica (Refração)</div>
+             <p className="text-xs mb-1">Lei de Snell: <Formula>n₁·senθ₁ = n₂·senθ₂</Formula></p>
+            <svg width="120" height="60" viewBox="0 0 120 60" className="text-foreground">
+                <defs>
+                    <marker id="cheatsheet_arrow_optics" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" className="fill-primary" /></marker>
+                </defs>
+                {/* Ondulatória */}
+                <path d="M5 20 H55" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <path d="M5 20 Q 15 5, 25 20 T 45 20" className="stroke-primary" strokeWidth="1.5" fill="none"/>
+                <path d="M15 12.5 V 20" stroke="hsl(var(--border))" strokeWidth="0.5" strokeDasharray="2 2"/>
+                <text x="17" y="18" className="text-[8px] fill-muted-foreground">A</text>
+                <path d="M5 25 H 45" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <path d="M5 23 V 27" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <path d="M45 23 V 27" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <text x="25" y="35" textAnchor="middle" className="text-[8px] fill-muted-foreground">&lambda;</text>
+                
+                {/* Óptica (Refração) */}
+                <path d="M65 30 H115" stroke="hsl(var(--border))" strokeWidth="1"/>
+                <text x="70" y="25" className="text-[8px] fill-muted-foreground">n₁</text>
+                <text x="70" y="40" className="text-[8px] fill-muted-foreground">n₂</text>
+                <path d="M90 5 V 55" stroke="hsl(var(--border))" strokeDasharray="2 2" strokeWidth="1"/>
+                <path d="M70 10 L90 30 L105 55" className="stroke-primary" strokeWidth="1.5" fill="none" markerEnd="url(#cheatsheet_arrow_optics)"/>
+                <path d="M90 30 A 10 10 0 0 0 83.4 21.7" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <text x="78" y="24" className="text-[7px] fill-muted-foreground">&theta;₁</text>
+                <path d="M90 30 A 8 8 0 0 1 94 37.5" fill="none" stroke="hsl(var(--border))" strokeWidth="0.5"/>
+                <text x="98" y="38" className="text-[7px] fill-muted-foreground">&theta;₂</text>
+            </svg>
+        </>, 'Alta (Fenômenos ondulatórios com som e luz, e suas aplicações tecnológicas, como fones com cancelamento de ruído)', 'Média/Alta (Formação de imagens em espelhos e lentes, Lei de Snell com rigor matemático)'],
     ]
 };
 
@@ -80,12 +185,56 @@ const physicsFormulas = {
     ]
 };
 
+const physicsQuestions = {
+    headers: ['Tópico Principal', 'ENEM (Contextualização/Cotidiano)', 'FUVEST (Rigor e Conceito)', 'Provão Paulista (Cálculo Direto)'],
+    rows: [
+        ['Mecânica', <>Um objeto cai de uma altura de 20m. Qual sua velocidade ao atingir o solo? (g=10m/s²)<br /><strong className="text-primary">R:</strong> <Formula>v = 20 m/s</Formula></>, <>Um bloco de 10kg é puxado por uma força de 30N que faz 37° com a horizontal (cos37°=0,8). Qual a aceleração?<br /><strong className="text-primary">R:</strong> <Formula>a = 2,4 m/s²</Formula></>, <>Um carro parte do repouso e atinge 20 m/s em 5s. Qual a sua aceleração média?<br /><strong className="text-primary">R:</strong> <Formula>a = 4 m/s²</Formula></>],
+        ['Eletricidade', <>Um disjuntor de 15A protege um circuito de 127V. Qual a potência máxima que pode ser ligada nele?<br /><strong className="text-primary">R:</strong> <Formula>P = 1905 W</Formula></>, <>Duas esferas condutoras idênticas, A (+4C) e B (-2C), são postas em contato e depois separadas. Qual a carga final de cada uma?<br /><strong className="text-primary">R:</strong> <Formula>+1C para cada</Formula></>, <>Um resistor de 10Ω é submetido a uma ddp de 12V. Qual a corrente que o atravessa?<br /><strong className="text-primary">R:</strong> <Formula>i = 1,2 A</Formula></>],
+        ['Ondulatória/Óptica', <>O som consegue contornar obstáculos, como quando ouvimos alguém em outro cômodo. Qual o nome deste fenômeno?<br /><strong className="text-primary">R:</strong> <Formula>Difração</Formula></>, <>Um objeto a 10cm de um espelho côncavo de raio 30cm forma uma imagem a que distância p'?<br /><strong className="text-primary">R:</strong> <Formula>p' = -30 cm</Formula></>, <>Uma onda no mar tem velocidade de 15 m/s e comprimento de 3,0 m. Qual sua frequência?<br /><strong className="text-primary">R:</strong> <Formula>f = 5,0 Hz</Formula></>]
+    ]
+};
+
+
 const chemistryTopics = {
     headers: ['Tópico Principal', 'Subtópicos Essenciais', 'ENEM (Ênfase)', 'FUVEST/Provão Paulista (Ênfase)'],
     rows: [
         ['Química Geral', 'Modelos Atômicos, Distribuição Eletrônica. Tabela Periódica e Propriedades. Ligações (Iônica, Covalente, Metálica) e Geometria Molecular. Polaridade. Forças Intermoleculares. Funções Inorgânicas (Ácidos, Bases, Sais, Óxidos) e reações.', 'Média/Alta (Relação entre estrutura, polaridade e propriedades como solubilidade e ponto de ebulição)', 'Alta (Teoria aprofundada de ligações, geometria VSEPR e nomenclatura)'],
-        ['Físico-Química', 'Estequiometria (cálculos, reagente limitante, rendimento). Soluções (Concentrações, diluição, misturas). Termoquímica (Entalpia, Lei de Hess). Cinética (Fatores que afetam a velocidade). Equilíbrio Químico (Kc, Kp, pH, pOH, hidrólise, Le Chatelier). Eletroquímica (Pilhas e Eletrólise).', 'Altíssima (Os 3 pilares: Estequiometria, Soluções e Termoquímica. Equilíbrio em contextos ambientais)', 'Alta (Todos os tópicos com maior rigor matemático e conceitual, incluindo cinética e eletroquímica)'],
-        ['Química Orgânica', 'Nomenclatura e identificação de Funções Orgânicas. Isomeria (Plana e Espacial). Propriedades Físicas dos compostos orgânicos. Reações Orgânicas (Adição, Substituição, Eliminação, Oxidação). Polímeros e Biomoléculas.', 'Alta (Identificação de funções em moléculas do cotidiano, polímeros, e relação estrutura-propriedade)', 'Alta (Foco intenso em Isomeria e mecanismos de Reações Orgânicas)'],
+        ['Físico-Química', <>
+            <div className="grid grid-cols-2 gap-x-4 gap-y-2">
+                <div>
+                    <div className="font-semibold text-primary/80 text-xs">Estequiometria</div>
+                    <p className="text-xs"><Formula>n = m/MM</Formula></p>
+                </div>
+                <div>
+                    <div className="font-semibold text-primary/80 text-xs">Soluções</div>
+                    <p className="text-xs"><Formula>C₁V₁ = C₂V₂</Formula></p>
+                </div>
+                <div>
+                    <div className="font-semibold text-primary/80 text-xs">Termoquímica</div>
+                    <p className="text-xs">Exo: <Formula>ΔH &lt; 0</Formula></p>
+                </div>
+                <div>
+                    <div className="font-semibold text-primary/80 text-xs">Eletroquímica</div>
+                    <p className="text-xs">Pilha: <Formula>ΔE° &gt; 0</Formula></p>
+                </div>
+             </div>
+        </>, 'Altíssima (Os 3 pilares: Estequiometria, Soluções e Termoquímica. Equilíbrio em contextos ambientais)', 'Alta (Todos os tópicos com maior rigor matemático e conceitual, incluindo cinética e eletroquímica)'],
+        ['Química Orgânica', <>
+            <div className="font-semibold text-primary/80">Funções Principais</div>
+            <p className="text-xs mb-1">Álcool: <Formula>R-OH</Formula></p>
+            <p className="text-xs mb-1">Ácido Carboxílico: <Formula>R-COOH</Formula></p>
+            <div className="font-semibold text-primary/80 mt-2">Isomeria Geométrica</div>
+            <svg width="120" height="40" viewBox="0 0 120 40" className="text-foreground">
+                <path d="M20 20 H40" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M20 20 L5 5" stroke="currentColor" strokeWidth="1" />
+                <path d="M40 20 L55 35" stroke="currentColor" strokeWidth="1" />
+                <text x="0" y="35" className="text-[10px] fill-muted-foreground">Cis</text>
+                <path d="M80 20 H100" stroke="currentColor" strokeWidth="1.5" />
+                <path d="M80 20 L65 5" stroke="currentColor" strokeWidth="1" />
+                <path d="M100 20 L115 5" stroke="currentColor" strokeWidth="1" />
+                <text x="60" y="35" className="text-[10px] fill-muted-foreground">Trans</text>
+            </svg>
+        </>, 'Alta (Identificação de funções em moléculas do cotidiano, polímeros, e relação estrutura-propriedade)', 'Alta (Foco intenso em Isomeria e mecanismos de Reações Orgânicas)'],
     ]
 };
 
@@ -100,6 +249,15 @@ const chemistryFormulas = {
         ['pH e pOH', <Formula>pH = -log[H⁺]</Formula>, 'Definição de pH.', "A escala logarítmica foi criada para evitar o uso de números muito pequenos com potências negativas (ex: 10⁻⁷ mol/L). O sinal negativo torna os valores de pH positivos. **Cenário:** Medir a acidez de um suco de limão. Uma [H⁺] de 10⁻² mol/L resulta em um pH = 2."],
         ['pH e pOH', <Formula>pH + pOH = 14</Formula>, 'Relação entre pH e pOH (a 25°C).', "Deriva da constante de autoionização da água (Kw = [H⁺][OH⁻] = 10⁻¹⁴). Aplicando '-log' em toda a equação, obtemos -log[H⁺] -log[OH⁻] = -log(10⁻¹⁴), o que resulta em pH + pOH = 14. **Cenário:** Calcular o pH de uma solução de soda cáustica (base) onde se conhece a [OH⁻]."],
         ['Gases', <Formula>PV = nRT</Formula>, 'Equação de Clapeyron (Gases Ideais).', "Combina as leis de Boyle (P∝1/V), Charles (V∝T) e Avogadro (V∝n) em uma única equação de estado para gases ideais. **Cenário:** Calcular a pressão dentro de um pneu de carro (volume V) depois de enchê-lo com uma certa quantidade de ar (n mols) em um dia quente (temperatura T)."],
+    ]
+};
+
+const chemistryQuestions = {
+    headers: ['Tópico Principal', 'ENEM (Contextualização/Ambiental)', 'FUVEST (Rigor e Físico-Química)', 'Provão Paulista (Cálculo Direto/Conceito)'],
+    rows: [
+        ['Química Geral', <>A chuva ácida é formada quando óxidos como SOx e NOx reagem com a água da atmosfera. Que função inorgânica é formada?<br /><strong className="text-primary">R:</strong> <Formula>Ácidos</Formula></>, <>Um elemento X (Z=17) se combina com Y (Z=19). Qual o tipo de ligação e a fórmula do composto?<br /><strong className="text-primary">R:</strong> <Formula>Iônica; KCl</Formula></>, <>Faça a distribuição eletrônica do elemento com Z=12 e indique sua família e período.<br /><strong className="text-primary">R:</strong> <Formula>Família 2; 3º Período</Formula></>],
+        ['Físico-Química', <>Qual a massa de NaCl (MM=58,5g/mol) necessária para preparar 500mL de uma solução 0,2 mol/L?<br /><strong className="text-primary">R:</strong> <Formula>5,85 g</Formula></>, <>Uma solução básica tem [OH⁻] = 10⁻¹⁰ mol/L. Qual o seu pH?<br /><strong className="text-primary">R:</strong> <Formula>pH = 4</Formula></>, <>Que volume de uma solução 2,0 mol/L é necessário para preparar 100mL de uma solução 0,5 mol/L?<br /><strong className="text-primary">R:</strong> <Formula>V₁ = 25 mL</Formula></>],
+        ['Química Orgânica', <>O etanol (CH₃CH₂OH) e o éter dimetílico (CH₃OCH₃) têm fórmula C₂H₆O. Que tipo de isomeria existe entre eles?<br /><strong className="text-primary">R:</strong> <Formula>Isomeria de Função</Formula></>, <>Dê o nome IUPAC do Tolueno (C₇H₈) e da Acetona (C₃H₆O).<br /><strong className="text-primary">R:</strong> <Formula>Metilbenzeno e Propanona</Formula></>, <>Qual o nome IUPAC do composto CH₃-CH₂-CH₂-COOH?<br /><strong className="text-primary">R:</strong> <Formula>Ácido Butanoico</Formula></>]
     ]
 };
 
@@ -119,11 +277,8 @@ export const CheatsheetView: React.FC = () => {
                     <Table headers={mathTopics.headers} rows={mathTopics.rows} />
                     <SubTitle>Fórmulas Mais Importantes</SubTitle>
                     <Table headers={mathFormulas.headers} rows={mathFormulas.rows} />
-                    <SubTitle>Exemplo de Questão (Estilo ENEM)</SubTitle>
-                    <ExampleBox title="Geometria Espacial e Otimização">
-                        <p className="mb-2 italic">"Uma empresa de cosméticos busca a embalagem cilíndrica de menor área total para um volume fixo de 100&pi; cm³. Qual a relação ideal entre o raio (r) e a altura (h)?"</p>
-                        <p className="text-sm"><strong className="text-primary">Resolução:</strong> O volume é V = &pi;r&sup2;h, logo h = 100/r&sup2;. A área total é A = 2&pi;rh + 2&pi;r&sup2;. Substituindo h, temos A(r) = 200&pi;/r + 2&pi;r&sup2;. Para otimizar (minimizar a área), a matemática de derivadas mostra que a condição ideal ocorre quando a altura é igual ao diâmetro, ou seja, <Formula>h = 2r</Formula>.</p>
-                    </ExampleBox>
+                    <SubTitle>Questões de Exemplo por Vestibular</SubTitle>
+                    <Table headers={mathQuestions.headers} rows={mathQuestions.rows} />
                 </section>
 
                 {/* FÍSICA */}
@@ -133,11 +288,8 @@ export const CheatsheetView: React.FC = () => {
                     <Table headers={physicsTopics.headers} rows={physicsTopics.rows} />
                     <SubTitle>Fórmulas Mais Importantes</SubTitle>
                     <Table headers={physicsFormulas.headers} rows={physicsFormulas.rows} />
-                    <SubTitle>Exemplo de Questão (Estilo FUVEST)</SubTitle>
-                    <ExampleBox title="Conservação de Energia Mecânica">
-                        <p className="mb-2 italic">"Um bloco de massa 'm' e velocidade 'v₀' colide com uma mola de constante elástica 'k' em uma superfície sem atrito. Qual a compressão máxima 'x' da mola?"</p>
-                        <p className="text-sm"><strong className="text-primary">Resolução:</strong> Pela conservação da energia mecânica, a energia cinética inicial do bloco é totalmente convertida em energia potencial elástica na compressão máxima. <Formula>E_c (inicial) = E_pe (final)</Formula> &rArr; <Formula>(mv₀&sup2;)/2 = (kx&sup2;)/2</Formula>. Isolando x, temos <Formula>x = v₀ &radic;(m/k)</Formula>.</p>
-                    </ExampleBox>
+                    <SubTitle>Questões de Exemplo por Vestibular</SubTitle>
+                    <Table headers={physicsQuestions.headers} rows={physicsQuestions.rows} />
                 </section>
 
                 {/* QUÍMICA */}
@@ -147,11 +299,8 @@ export const CheatsheetView: React.FC = () => {
                     <Table headers={chemistryTopics.headers} rows={chemistryTopics.rows} />
                     <SubTitle>Fórmulas Mais Importantes</SubTitle>
                     <Table headers={chemistryFormulas.headers} rows={chemistryFormulas.rows} />
-                    <SubTitle>Exemplo de Questão (Estilo ENEM)</SubTitle>
-                    <ExampleBox title="Soluções e Estequiometria">
-                        <p className="mb-2 italic">"Uma amostra de água possui 0,001 mol/L de íons Cádmio (Cd²⁺). Qual é essa concentração em mg/L? (Massa molar do Cd &asymp; 112 g/mol)."</p>
-                        <p className="text-sm"><strong className="text-primary">Resolução:</strong> Primeiro, converte-se mol para grama: m = n &middot; M = 0,001 mol &middot; 112 g/mol = 0,112 g. Como a concentração é por litro, temos 0,112 g/L. Convertendo para miligramas (1g = 1000mg), a concentração é <Formula>112 mg/L</Formula>.</p>
-                    </ExampleBox>
+                    <SubTitle>Questões de Exemplo por Vestibular</SubTitle>
+                    <Table headers={chemistryQuestions.headers} rows={chemistryQuestions.rows} />
                 </section>
                 
                 {/* DICAS */}
