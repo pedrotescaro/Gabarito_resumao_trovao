@@ -1,6 +1,6 @@
 import React from 'react';
 
-export type DisciplineName = 'Matemática' | 'Física' | 'Química';
+export type DisciplineName = 'Matemática' | 'Física' | 'Química' | 'Estatística e Probabilidade' | 'Trigonometria' | 'Química Geral';
 
 export type View = 'home' | 'summaries' | 'flashcards' | 'questions' | 'cheatsheet';
 

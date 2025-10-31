@@ -49,22 +49,35 @@ const ProgressBar: React.FC<{ progress: ProgressData }> = ({ progress }) => {
         }, { new: 0, learning: 0, mastered: 0 });
     }, [progress]);
 
-    const masteredPercent = (counts.mastered / total) * 100;
-    const learningPercent = (counts.learning / total) * 100;
+    const masteredPercent = total > 0 ? (counts.mastered / total) * 100 : 0;
+    const learningPercent = total > 0 ? (counts.learning / total) * 100 : 0;
+    const newPercent = total > 0 ? (counts.new / total) * 100 : 0;
+
+    const legendItems = [
+        { label: 'Dominados', count: counts.mastered, color: 'bg-green-500' },
+        { label: 'Aprendendo', count: counts.learning, color: 'bg-blue-500' },
+        { label: 'Novos', count: counts.new, color: 'bg-gray-400 dark:bg-gray-600' },
+    ];
 
     return (
         <div className="w-full mb-4">
-            <div className="flex text-xs text-muted-foreground mb-1">
-                <span className="flex-1 text-left">Progresso do Tópico</span>
-                <span>{counts.mastered} / {total} Dominados</span>
+            <div className="w-full bg-muted rounded-full h-3 flex overflow-hidden mb-2">
+                <div className="bg-green-500 h-3 transition-all duration-300" style={{ width: `${masteredPercent}%` }} title={`${counts.mastered} Dominados`}></div>
+                <div className="bg-blue-500 h-3 transition-all duration-300" style={{ width: `${learningPercent}%` }} title={`${counts.learning} Aprendendo`}></div>
+                <div className="bg-gray-400 dark:bg-gray-600 h-3 transition-all duration-300" style={{ width: `${newPercent}%` }} title={`${counts.new} Novos`}></div>
             </div>
-            <div className="w-full bg-muted rounded-full h-2.5 flex overflow-hidden">
-                <div className="bg-green-500 h-2.5 transition-all duration-300" style={{ width: `${masteredPercent}%` }} title={`${counts.mastered} Dominados`}></div>
-                <div className="bg-blue-500 h-2.5 transition-all duration-300" style={{ width: `${learningPercent}%` }} title={`${counts.learning} Aprendendo`}></div>
+            <div className="flex flex-wrap justify-center sm:justify-between items-center text-xs text-muted-foreground gap-x-4 gap-y-1">
+                {legendItems.map(item => (
+                    <div key={item.label} className="flex items-center gap-1.5">
+                        <span className={`h-2 w-2 rounded-full ${item.color}`}></span>
+                        <span>{item.label} ({item.count})</span>
+                    </div>
+                ))}
             </div>
         </div>
     );
 };
+
 
 export const FlashcardPlayer: React.FC<{ flashcards: Flashcard[] }> = ({ flashcards }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -213,19 +226,19 @@ export const FlashcardPlayer: React.FC<{ flashcards: Flashcard[] }> = ({ flashca
       </div>
       <div className="w-full max-w-2xl" style={{ perspective: '1000px' }}>
         <div 
-          className={`relative w-full h-80 rounded-lg shadow-lg transition-transform duration-500 cursor-pointer ${animationClass}`}
+          className={`relative w-full aspect-[2/1] rounded-lg shadow-lg transition-transform duration-500 cursor-pointer ${animationClass}`}
           style={{ transformStyle: 'preserve-3d', transform: isFlipped ? 'rotateY(180deg)' : 'rotateY(0deg)' }}
           onClick={handleFlip}
           aria-live="polite"
         >
           {/* Front */}
-          <div className="absolute w-full h-full bg-card border border-border rounded-lg flex items-center justify-center p-6 text-center" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
+          <div className="absolute w-full h-full bg-card border border-border rounded-lg flex items-center justify-center p-4 sm:p-6 text-center" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden' }}>
             <StatusBadge status={currentStatus} />
-            <p className="text-2xl font-semibold">{currentFlashcard.question}</p>
+            <p className="text-xl sm:text-2xl font-semibold">{currentFlashcard.question}</p>
           </div>
           {/* Back */}
-          <div className="absolute w-full h-full bg-secondary border border-border rounded-lg flex items-center justify-center p-6 text-center" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
-            <p className="text-xl">{currentFlashcard.answer}</p>
+          <div className="absolute w-full h-full bg-secondary border border-border rounded-lg flex items-center justify-center p-4 sm:p-6 text-center" style={{ backfaceVisibility: 'hidden', WebkitBackfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}>
+            <div className="text-lg sm:text-xl" dangerouslySetInnerHTML={{ __html: currentFlashcard.answer }} />
           </div>
         </div>
       </div>
@@ -255,4 +268,3 @@ export const FlashcardPlayer: React.FC<{ flashcards: Flashcard[] }> = ({ flashca
     </div>
   );
 };
-      

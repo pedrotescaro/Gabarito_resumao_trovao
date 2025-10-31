@@ -42,17 +42,17 @@ const Formula: React.FC<FormulaProps> = ({ children }) => {
 
 
 const Table: React.FC<{headers: string[], rows: (string | React.ReactNode)[][]}> = ({ headers, rows }) => (
-  <div className="overflow-x-auto my-6">
-    <table className="w-full border-collapse text-sm">
+  <div className="overflow-x-auto my-6 border border-border rounded-lg">
+    <table className="w-full min-w-[720px] border-collapse text-sm">
       <thead>
         <tr className="bg-muted">
-          {headers.map((header, i) => <th key={i} className="border border-border p-3 text-left font-semibold">{header}</th>)}
+          {headers.map((header, i) => <th key={i} className="border-b border-border p-3 text-left font-semibold">{header}</th>)}
         </tr>
       </thead>
       <tbody>
         {rows.map((row, i) => (
           <tr key={i} className="border-t border-border even:bg-secondary/50">
-            {row.map((cell, j) => <td key={j} className="border border-border p-3 align-top">{cell}</td>)}
+            {row.map((cell, j) => <td key={j} className="p-3 align-top">{cell}</td>)}
           </tr>
         ))}
       </tbody>
